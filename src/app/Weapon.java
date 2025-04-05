@@ -8,16 +8,11 @@ public class Weapon extends SalableProduct {
         this.damage = damage;
     }
 
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
+    public int getDamage() { return damage; }
+    public void setDamage(int damage) { this.damage = damage; }
 
     @Override
     public String toString() {
-        return getName() + " (Damage: " + damage + ") - $" + getPrice() + " [" + getQuantity() + " available]";
+        return super.toString() + " (Damage: " + damage + ")";
     }
 }

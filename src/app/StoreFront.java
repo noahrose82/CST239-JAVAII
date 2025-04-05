@@ -1,132 +1,82 @@
 package app;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class StoreFront {
-    private InventoryManager inventoryManager = new InventoryManager();
-    private ShoppingCart shoppingCart = new ShoppingCart();
+    private InventoryManager inventoryManager;
+    private ShoppingCart cart = new ShoppingCart();
 
-    // Constructor to populate initial inventory from JSON
     public StoreFront(String jsonFilePath) {
-        initializeInventory(jsonFilePath);
-    }
+        inventoryManager = new InventoryManager();
 
-    // Method to populate the store with initial products
-    private void initializeInventory(String jsonFilePath) {
         try {
-            ArrayList<SalableProduct> inventory = FileService.loadInventory(jsonFilePath);
-            for (SalableProduct product : inventory) {
-                inventoryManager.addProduct(product);
-            }
+            inventoryManager.getInventory().addAll(FileService.loadInventory(jsonFilePath));
         } catch (CustomFileException e) {
             System.out.println("Error loading inventory: " + e.getMessage());
         }
     }
 
-    // Method to purchase a product
-    public void purchase(SalableProduct product) {
-        if (product.getQuantity() > 0) {
-            shoppingCart.addToCart(product);
-            product.setQuantity(product.getQuantity() - 1);
-            System.out.println(product.getName() + " has been added to your cart.");
-        } else {
-            System.out.println("Product out of stock.");
-        }
-    }
-
-    // Method to cancel a purchase
-    public void cancelPurchase(SalableProduct product) {
-        if (shoppingCart.getTotal() > 0) {
-            shoppingCart.removeFromCart(product);
-            product.setQuantity(product.getQuantity() + 1);
-            System.out.println(product.getName() + " has been removed from your cart.");
-        } else {
-            System.out.println("Cart is empty.");
-        }
-    }
-
-    // Show the total cart cost
-    public void showCartTotal() {
-        System.out.println("Total: $" + shoppingCart.getTotal());
-    }
-
-    // Show the contents of the cart
-    public void showCartContents() {
-        shoppingCart.displayCart();
-    }
-
-    // Display inventory
-    public void displayInventory() {
-        System.out.println("\nAvailable Products:");
-        for (SalableProduct product : inventoryManager.getInventory()) {
-            System.out.println(product.getName() + " - $" + product.getPrice() + " [" + product.getQuantity() + " available]");
-        }
-    }
-
-    // Handle user interaction
     public void runStore() {
-        System.out.println("\nWelcome to the Game Store!");
+        Scanner scanner = new Scanner(System.in);
         boolean running = true;
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
 
         while (running) {
-            System.out.println("\nChoose an option:");
-            System.out.println("1. Display Inventory");
-            System.out.println("2. Purchase Product");
-            System.out.println("3. Cancel Purchase");
-            System.out.println("4. Show Cart");
-            System.out.println("5. Show Total");
-            System.out.println("6. Exit");
-            System.out.print("Enter your choice: ");
+            System.out.println("\n==== Store Menu ====");
+            System.out.println("1. View and Sort Inventory");
+            System.out.println("2. Add to Cart");
+            System.out.println("3. View Cart");
+            System.out.println("4. Checkout");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            String choice = scanner.nextLine();
 
             switch (choice) {
-                case 1:
-                    displayInventory();
+                case "1":
+                    inventoryManager.displaySortMenu(scanner);
                     break;
-                case 2:
-                    System.out.print("Enter product name to purchase: ");
+
+                case "2":
+                    inventoryManager.displayInventory();
+                    System.out.print("Enter the name of the product to add to cart: ");
                     String productName = scanner.nextLine();
-                    SalableProduct productToBuy = findProduct(productName);
-                    if (productToBuy != null) {
-                        purchase(productToBuy);
+                    SalableProduct productToAdd = findProductByName(productName);
+                    if (productToAdd != null && productToAdd.getQuantity() > 0) {
+                        cart.addToCart(productToAdd);
+                        productToAdd.setQuantity(productToAdd.getQuantity() - 1);
+                        System.out.println("Added to cart.");
                     } else {
-                        System.out.println("Product not found.");
+                        System.out.println("Product not found or out of stock.");
                     }
                     break;
-                case 3:
-                    System.out.print("Enter product name to cancel purchase: ");
-                    String productToCancel = scanner.nextLine();
-                    SalableProduct productToRemove = findProduct(productToCancel);
-                    if (productToRemove != null) {
-                        cancelPurchase(productToRemove);
-                    } else {
-                        System.out.println("Product not found.");
-                    }
+
+                case "3":
+                    System.out.println("\nYour Cart:");
+                    cart.displayCart();
+                    System.out.println("Total: $" + cart.getTotal());
                     break;
-                case 4:
-                    showCartContents();
-                    break;
-                case 5:
-                    showCartTotal();
-                    break;
-                case 6:
-                    System.out.println("Thank you for visiting the store!");
+
+                case "4":
+                    System.out.println("Checking out...");
+                    cart.displayCart();
+                    System.out.println("Total: $" + cart.getTotal());
                     running = false;
                     break;
+
+                case "5":
+                    System.out.println("Exiting the store.");
+                    running = false;
+                    break;
+
                 default:
-                    System.out.println("Invalid choice. Try again.");
+                    System.out.println("Invalid option. Try again.");
             }
         }
 
         scanner.close();
     }
 
-    // Helper method to find a product by name
-    private SalableProduct findProduct(String name) {
+    private SalableProduct findProductByName(String name) {
         for (SalableProduct product : inventoryManager.getInventory()) {
             if (product.getName().equalsIgnoreCase(name)) {
                 return product;

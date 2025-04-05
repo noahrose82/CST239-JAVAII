@@ -8,16 +8,11 @@ public class Health extends SalableProduct {
         this.healingAmount = healingAmount;
     }
 
-    public int getHealingAmount() {
-        return healingAmount;
-    }
-
-    public void setHealingAmount(int healingAmount) {
-        this.healingAmount = healingAmount;
-    }
+    public int getHealingAmount() { return healingAmount; }
+    public void setHealingAmount(int healingAmount) { this.healingAmount = healingAmount; }
 
     @Override
     public String toString() {
-        return getName() + " (Healing: " + healingAmount + ") - $" + getPrice() + " [" + getQuantity() + " available]";
+        return super.toString() + " (Healing: " + healingAmount + ")";
     }
 }

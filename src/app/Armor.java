@@ -8,16 +8,11 @@ public class Armor extends SalableProduct {
         this.defense = defense;
     }
 
-    public int getDefense() {
-        return defense;
-    }
-
-    public void setDefense(int defense) {
-        this.defense = defense;
-    }
+    public int getDefense() { return defense; }
+    public void setDefense(int defense) { this.defense = defense; }
 
     @Override
     public String toString() {
-        return getName() + " (Defense: " + defense + ") - $" + getPrice() + " [" + getQuantity() + " available]";
+        return super.toString() + " (Defense: " + defense + ")";
     }
 }

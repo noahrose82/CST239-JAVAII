@@ -1,12 +1,11 @@
 package app;
 
-public class SalableProduct {
+public class SalableProduct implements Comparable<SalableProduct> {
     private String name;
     private String description;
     private double price;
     private int quantity;
 
-    // Constructor
     public SalableProduct(String name, String description, double price, int quantity) {
         this.name = name;
         this.description = description;
@@ -14,7 +13,6 @@ public class SalableProduct {
         this.quantity = quantity;
     }
 
-    // Getters and Setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
@@ -29,6 +27,16 @@ public class SalableProduct {
 
     @Override
     public String toString() {
-        return name + " - " + description + " - $" + price + " [" + quantity + " available]";
+        return name + " - $" + price + " [" + quantity + " available]";
+    }
+
+    // Sorting by name (case-insensitive), then price
+    @Override
+    public int compareTo(SalableProduct other) {
+        int nameComparison = this.name.compareToIgnoreCase(other.name);
+        if (nameComparison != 0) {
+            return nameComparison;
+        }
+        return Double.compare(this.price, other.price);
     }
 }
