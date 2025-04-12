@@ -3,7 +3,7 @@ package app;
 import com.google.gson.*;
 import java.lang.reflect.Type;
 
-class SalableProductDeserializer implements JsonDeserializer<SalableProduct> {
+public class SalableProductDeserializer implements JsonDeserializer<SalableProduct> {
     @Override
     public SalableProduct deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
