@@ -1,0 +1,18 @@
+[
+  {
+    "type": "Weapon",
+    "name": "Test Sword",
+    "description": "Just a test blade",
+    "price": 10.0,
+    "quantity": 2,
+    "damage": 5
+  },
+  {
+    "type": "Health",
+    "name": "Test Potion",
+    "description": "Heals a little",
+    "price": 5.0,
+    "quantity": 10,
+    "healingAmount": 15
+  }
+]
